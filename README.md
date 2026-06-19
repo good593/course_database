@@ -110,28 +110,27 @@ paginate: true
 ![Alt text](./img/basic/image-7.png)
 
 ---
-## [MySQL](./MySQL.md)
-- MySQL은 오픈소스 관계형 데이터베이스 관리 시스템입니다.
-- 사용자는 SQL이라는 구조화된 쿼리 언어를 사용하여 데이터를 정의, 조작, 제어, 쿼리할 수 있습니다.
-- MySQL은 오픈소스이므로 25년 이상 사용자와 긴밀히 협력하여 개발한 여러 기능이 포함되어 있습니다.
+# DBMS 접속 방법 
 
 ---
-# [DBeaver](https://dbeaver.io/)
+## [1. DBeaver](https://dbeaver.io/)
 - Community Edition 버전을 사용하면 라이센스(Apache License)가 무료이다.
 - 자바/이클립스 기반으로 개발되어서 윈도우, 리눅스, MAC에서 구동된다.
 - JDBC 기반으로 DB를 연결해서 그런지 엄청나게 많은 DB를 지원한다. (ORACLE, MySQL, Mariadb, Postgresql, Greenplum ... )
 - 개발소스가 공개되어서 버그픽스가 가능하고 새로운 기능을 개발하여 사용이 가능하다.
 
-## [설치방법](https://goddaehee.tistory.com/202) 
+### [설치방법](https://goddaehee.tistory.com/202) 
 
 ---
-![Alt text](./img/mysql/image-2.png)
+### 사용예시: MySQL
+
+![w:900](./img/mysql/image-2.png)
 
 ---
-![w:900](./img/mysql/image-3.png)
+![w:850](./img/mysql/image-3.png)
 
 ---
-- 애러: "Public Key Retrieval is not allowed"
+> 애러: "Public Key Retrieval is not allowed"
 
 ![Alt text](./img/basic/image1.png)
 
@@ -145,7 +144,8 @@ paginate: true
 ![Alt text](./img/mysql/image-6.png)
 
 ---
-## [VS Code](https://marketplace.visualstudio.com/items?itemName=Oracle.mysql-shell-for-vs-code)
+## [2. VS Code](https://marketplace.visualstudio.com/items?itemName=Oracle.mysql-shell-for-vs-code)
+> 예시: MySQL
 
 ![Alt text](./img/mysql/image.png)
 

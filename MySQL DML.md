@@ -1,5 +1,13 @@
 ---
+style: |
+  img {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
 marp: true
+paginate: true
 ---
 # [DML(Data Manipulation Language)](https://www.fun-coding.org/mysql_basic4.html#gsc.tab=0)
 테이블의 데이터를 삽입, 조회, 수정, 삭제하는 구문
@@ -52,7 +60,8 @@ mysql> SELECT * FROM 테이블명 LIMIT 100, 10; # 결과중 100번째부터 10�
 
 ---
 ## [Join 데이터 조회](https://inpa.tistory.com/entry/MYSQL-%F0%9F%93%9A-JOIN-%EC%A1%B0%EC%9D%B8-%EA%B7%B8%EB%A6%BC%EC%9C%BC%EB%A1%9C-%EC%95%8C%EA%B8%B0%EC%89%BD%EA%B2%8C-%EC%A0%95%EB%A6%AC) 
-![Alt text](./img/mysql/dml/image-5.png)
+
+![w:900](./img/mysql/dml/image-5.png)
 
 ---
 - Inner Join

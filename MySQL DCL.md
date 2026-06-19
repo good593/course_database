@@ -1,5 +1,13 @@
 ---
+style: |
+  img {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
 marp: true
+paginate: true
 ---
 # [DCL(Data Control Language)](https://www.fun-coding.org/post/mysql_basic5.html#gsc.tab=0)
 데이터의 보안, 무결성, 회복 등을 제어하는 구문
@@ -37,6 +45,8 @@ mysql> GRANT ALL privileges ON *.* to '계정명'@계정 호스트 정보;
 # grant table reload
 mysql> FLUSH PRIVILEGES; # 새로운 권한 적용
 ```
+
+---
 - 특정 데이터베이스 전체 테이블의 조회 권한 부여
 ```sql
 mysql> GRANT select ON 특정 데이터베이스.* to '계정명'@계정 호스트 정보;

@@ -24,26 +24,30 @@ mysql> DROP DATABASE IF EXISTS dbname;
 ```
 
 ---
-## 테이블
-- [제약 조건](https://dev-coco.tistory.com/55)
-    - `NOT NULL`: NOT NULL 제약 조건을 설정하면, 해당 필드는 NULL 값을 저장할 수 없다.
-    - `UNIQUE`: UNIQUE 제약 조건을 설정하면, 해당 필드는 서로 다른 값을 가져야 한다.
-    - `PRIMARY KEY`: PRIMARY KEY 제약 조건을 설정하면, 해당 필드는 NOT NULL과 UNIQUE 제약 조건의 특징을 모두 가진다.
-    - `FOREIGN KEY`: FOREIGN KEY 제약 조건을 설정한 필드를 외래 키라고 부르며, 한 테이블을 다른 테이블과 연결해주는 역할을 한다.
-    - `DEFAULT`: DEFAULT 제약 조건은 해당 필드의 기본값을 설정할 수 있게 해준다.
-
----
-- [데이터 타입](https://dev.mysql.com/doc/refman/8.0/en/data-types.html)
-    - [Numeric Data Types](https://dev.mysql.com/doc/refman/8.0/en/numeric-types.html)
-    - [Date and Time Data Types](https://dev.mysql.com/doc/refman/8.0/en/date-and-time-types.html)
-    - [String Data Types](https://dev.mysql.com/doc/refman/8.0/en/string-types.html)
-    - [Spatial Data Types](https://dev.mysql.com/doc/refman/8.0/en/spatial-types.html)
-    - [The JSON Data Type](https://dev.mysql.com/doc/refman/8.0/en/json.html)
-    - [Data Type Default Values](https://dev.mysql.com/doc/refman/8.0/en/data-type-defaults.html)
-    - [Data Type Storage Requirements](https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html)
-
----
 ## 테이블 생성
+
+---
+### [제약 조건](https://dev-coco.tistory.com/55)
+
+- `NOT NULL`: NOT NULL 제약 조건을 설정하면, 해당 필드는 NULL 값을 저장할 수 없다.
+- `UNIQUE`: UNIQUE 제약 조건을 설정하면, 해당 필드는 서로 다른 값을 가져야 한다.
+- `PRIMARY KEY`: PRIMARY KEY 제약 조건을 설정하면, 해당 필드는 NOT NULL과 UNIQUE 제약 조건의 특징을 모두 가진다.
+- `FOREIGN KEY`: FOREIGN KEY 제약 조건을 설정한 필드를 외래 키라고 부르며, 한 테이블을 다른 테이블과 연결해주는 역할을 한다.
+- `DEFAULT`: DEFAULT 제약 조건은 해당 필드의 기본값을 설정할 수 있게 해준다.
+
+---
+### [데이터 타입](https://dev.mysql.com/doc/refman/8.0/en/data-types.html)
+
+- [Numeric Data Types](https://dev.mysql.com/doc/refman/8.0/en/numeric-types.html)
+- [Date and Time Data Types](https://dev.mysql.com/doc/refman/8.0/en/date-and-time-types.html)
+- [String Data Types](https://dev.mysql.com/doc/refman/8.0/en/string-types.html)
+- [Spatial Data Types](https://dev.mysql.com/doc/refman/8.0/en/spatial-types.html)
+- [The JSON Data Type](https://dev.mysql.com/doc/refman/8.0/en/json.html)
+- [Data Type Default Values](https://dev.mysql.com/doc/refman/8.0/en/data-type-defaults.html)
+- [Data Type Storage Requirements](https://dev.mysql.com/doc/refman/8.0/en/storage-requirements.html)
+
+---
+
 ```sql
 # 학생 student
 create table student (
