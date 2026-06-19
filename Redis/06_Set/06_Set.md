@@ -1,3 +1,14 @@
+---
+style: |
+  img {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+marp: true
+paginate: true
+---
 # 6차시. Set
 
 ## 학습 목표

@@ -1,3 +1,14 @@
+---
+style: |
+  img {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+marp: true
+paginate: true
+---
 # 10차시. Python 연동
 
 ## 학습 목표

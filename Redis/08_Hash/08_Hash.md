@@ -1,3 +1,14 @@
+---
+style: |
+  img {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+marp: true
+paginate: true
+---
 # 8차시. Hash
 
 ## 학습 목표
