@@ -1,0 +1,8 @@
+# 개발 패키지
+jupyter==1.1.1
+python-dotenv==1.2.1
+pandas==2.3.3
+
+# PostgreSQL 패키지
+psycopg[binary]==3.3.2
+

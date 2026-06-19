@@ -1,0 +1,8 @@
+# 개발 패키지
+jupyter==1.1.1
+python-dotenv==1.2.1
+pandas==2.3.3
+
+# Redis 패키지 
+redis==7.1.0
+redisvl==0.13.2
