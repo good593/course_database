@@ -11,15 +11,13 @@ paginate: true
 ---
 # [Redis](https://redis.io/)
 
----
-## 1. Redis란?
 - Redis는 데이터를 주로 메모리에 저장하는 키-값 기반 데이터 저장소입니다.
 - 디스크보다 빠른 메모리에서 데이터를 읽고 쓰기 때문에 빠른 응답이 필요한
 캐시, 세션, 카운터, 랭킹, 메시지 처리 등에 자주 사용합니다.
 - Redis의 이름은 **Remote Dictionary Server**에서 왔습니다. 단순한 문자열뿐 아니라 List, Set, Sorted Set, Hash 같은 여러 자료구조를 제공합니다.
 
 ---
-## 2. 관계형 데이터베이스와 비교
+## 관계형 데이터베이스와 비교
 
 | 구분 | 관계형 데이터베이스 | Redis |
 |---|---|---|
@@ -33,7 +31,7 @@ paginate: true
 > 주문과 결제 같은 중요한 원본 데이터는 관계형 데이터베이스에 저장하고, 자주 조회하는 결과를 Redis에 캐시하는 방식으로 함께 사용하는 경우가 많습니다.
 
 ---
-## 3. Redis의 주요 특징
+## Redis의 주요 특징
 
 1. 메모리 기반이라 읽기와 쓰기가 빠릅니다.
 2. 키마다 만료 시간을 설정할 수 있습니다.
@@ -45,7 +43,27 @@ paginate: true
 > Redis를 사용할 때는 데이터의 중요도, 메모리 한도, 영속성 정책을 함께 결정해야 합니다.
 
 ---
-## 4. 첫 번째 명령
+## Redis 설치 및 접속 
+
+---
+### Redis 설치 with Docker
+> Redis 폴더 이동 후 명령어 실행 
+
+```shell
+docker-compose up -d
+```
+![alt text](image.png)
+
+---
+### [Redis 접속](http://localhost:5540/) 
+
+![bg right w:600](image-1.png)
+
+---
+![alt text](image-2.png)
+
+---
+## 첫 번째 명령
 
 `redis-cli`를 실행한 뒤 다음 명령을 입력합니다.
 

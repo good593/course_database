@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   redis:
-    container_name: langgraph-redis-stack
+    container_name: redis-stack
     # 'server'가 붙지 않은 통합 이미지를 사용해 봅니다.
     image: redis/redis-stack:7.2.0-v10
     environment:
@@ -16,7 +16,7 @@ services:
 
   # 기존 redis-ui 서비스는 유지해도 되고, 위 8001 포트를 써도 됩니다.
   redis-ui:
-    container_name: langgraph-redis-insight
+    container_name: redis-insight
     image: redis/redisinsight:2.54
     ports:
       - "5540:5540"
