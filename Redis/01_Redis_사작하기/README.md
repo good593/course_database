@@ -55,7 +55,10 @@ docker-compose up -d
 ![alt text](image.png)
 
 ---
-### [Redis 접속](http://localhost:5540/) 
+![alt text](image-3.png)
+
+---
+### [Redis UI 접속](http://localhost:5540/) 
 
 ![bg right w:600](image-1.png)
 
@@ -63,19 +66,36 @@ docker-compose up -d
 ![alt text](image-2.png)
 
 ---
-## 첫 번째 명령
+### Redis Server 접속
 
-`redis-cli`를 실행한 뒤 다음 명령을 입력합니다.
+![alt text](image-4.png)
+
+---
+> `redis-cli`를 실행한 뒤 다음 명령을 입력합니다.
+
+![alt text](image-5.png)
+
+---
+## Redis 명령어
 
 ```redis
+# Redis 서버가 정상적으로 동작하는지 확인 (응답: PONG)
 PING
+
+# greeting이라는 Key에 "Hello Redis" 문자열 저장
 SET greeting "Hello Redis"
+
+# greeting Key의 값을 조회
 GET greeting
+
+# greeting Key 삭제
 DEL greeting
+
+# 삭제된 greeting Key 조회
 GET greeting
 ```
 
-> 예상 결과는 차례로 `PONG`, `OK`, `Hello Redis`, `1`, `(nil)`입니다.
+![bg right w:600](image-6.png)
 
 ---
 ### 명령 구조 읽기
@@ -90,46 +110,19 @@ SET    greeting    "Hello Redis"
 - `"Hello Redis"`: 저장할 값
 
 ---
-## 5. 서버 정보 확인
+## 서버 정보 확인
 
-```redis
-INFO server
-INFO memory
-DBSIZE
-```
-
-`INFO`는 서버 상태를 영역별로 보여 줍니다. 처음에는 모든 항목을 해석하기보다
+> `DBSIZE`: 현재 선택된 Redis 데이터베이스(DB)에 저장된 Key의 개수를 반환하는 명령어
 Redis 버전, 실행 모드, 사용 메모리 정도만 찾아봅니다.
 
----
-## 실습. 나의 첫 Redis 데이터
-
-1. `student:name` 키에 자신의 이름을 저장합니다.
-2. 저장한 이름을 조회합니다.
-3. `student:course` 키에 `redis`를 저장합니다.
-4. 현재 키 개수를 확인합니다.
-5. 두 키를 삭제하고 다시 키 개수를 확인합니다.
-
-```redis
-SET student:name "민수"
-GET student:name
-SET student:course redis
-DBSIZE
-DEL student:name student:course
-DBSIZE
-```
+![alt text](image-9.png)
 
 ---
-## 확인 문제
+> `INFO server`: Redis 서버 자체의 상태 정보(Server Information)만 조회하는 명령어
 
-1. Redis가 빠른 가장 큰 이유는 무엇인가요?
-2. Redis가 관계형 데이터베이스를 항상 대체할 수 없는 이유는 무엇인가요?
-3. 서버 연결 상태를 확인하는 명령은 무엇인가요?
-4. 존재하지 않는 키를 `GET`하면 어떤 결과가 나오나요?
+![alt text](image-7.png)
 
 ---
-## 정리
+> `INFO memory`: Redis의 메모리 사용 현황을 조회하는 명령어
 
-- Redis는 메모리를 중심으로 동작하는 키-값 데이터 저장소입니다.
-- 관계형 데이터베이스와 경쟁하기보다 서로 다른 역할로 함께 사용합니다.
-- `PING`, `SET`, `GET`, `DEL`은 가장 기본적인 Redis 명령입니다.
+![alt text](image-8.png)
