@@ -26,18 +26,18 @@ SET message "hello"
 # message의 값 조회
 GET message
 ```
-![alt text](image.png)
+![alt text](./img/image.png)
 
-![alt text](image-1.png)
+![alt text](./img/image-1.png)
 
 ---
 ```redis
 # message 문자열의 길이(문자 수) 조회
 STRLEN message
 ```
-![alt text](image-2.png)
+![alt text](./img/image-2.png)
 
-![alt text](image-3.png)
+![alt text](./img/image-3.png)
 
 ---
 ```redis
@@ -47,18 +47,18 @@ APPEND message " redis"
 # 변경된 message 값 조회
 GET message
 ```
-![alt text](image-4.png)
+![alt text](./img/image-4.png)
 
-![alt text](image-5.png)
+![alt text](./img/image-5.png)
 
 ---
 ```redis
 # message 문자열의 일부만 조회 (0번부터 4번 인덱스까지)
 GETRANGE message 0 4
 ```
-![alt text](image-6.png)
+![alt text](./img/image-6.png)
 
-![alt text](image-7.png)
+![alt text](./img/image-7.png)
 
 ---
 ## 2. 여러 값 처리
@@ -71,9 +71,9 @@ MGET user:1:name user:2:name user:3:name
 > 다만 서로 관련 없는 많은 키를 무제한으로 한 번에 요청하면 서버와 네트워크에 부담이 되므로 적절한 크기로 나눕니다.
 
 ---
-![alt text](image-8.png)
+![alt text](./img/image-8.png)
 
-![alt text](image-9.png)
+![alt text](./img/image-9.png)
 
 ---
 ## 3. 카운터
@@ -85,9 +85,9 @@ SET article:100:views 0
 INCR article:100:views
 GET article:100:views
 ```
-![alt text](image-10.png)
+![alt text](./img/image-10.png)
 
-![alt text](image-11.png)
+![alt text](./img/image-11.png)
 
 ---
 - `INCRBY`: 지정한 정수만큼 증가
@@ -96,9 +96,9 @@ GET article:100:views
 INCRBY article:100:views 10
 GET article:100:views
 ```
-![alt text](image-12.png)
+![alt text](./img/image-12.png)
 
-![alt text](image-13.png)
+![alt text](./img/image-13.png)
 
 ---
 - `DECR`, `DECRBY`: 값을 감소
@@ -106,9 +106,9 @@ GET article:100:views
 DECR article:100:views
 GET article:100:views
 ```
-![alt text](image-14.png)
+![alt text](./img/image-14.png)
 
-![alt text](image-15.png)
+![alt text](./img/image-15.png)
 
 ---
 ## 4. JSON 저장
@@ -120,6 +120,6 @@ GET cache:product:1001
 > JSON 문자열은 객체 전체를 한 번에 저장하고 읽기 쉽지만, 일부 필드만 수정하려면 전체 값을 읽어 다시 저장해야 합니다. `필드 단위 조회와 수정이 필요하면 Hash를 고려합니다.`
 
 ---
-![alt text](image-16.png)
+![alt text](./img/image-16.png)
 
-![alt text](image-17.png)
+![alt text](./img/image-17.png)
