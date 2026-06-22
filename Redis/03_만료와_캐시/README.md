@@ -23,8 +23,7 @@ paginate: true
 ---
 ## 실무에서의 구분
 
-![bg right w:500](image.png)
-
+![bg right w:450](./img/image.png)
 
 ---
 ## 1. 만료 시간
@@ -52,27 +51,27 @@ paginate: true
 ```redis
 SET auth:code:user7 482913
 ```
-![alt text](image-1.png)
+![alt text](./img/image-1.png)
 
-![alt text](image-2.png)
+![alt text](./img/image-2.png)
 
 ---
 > 만료 생성
 ```redis
 EXPIRE auth:code:user7 180
 ```
-![alt text](image-3.png)
+![alt text](./img/image-3.png)
 
-![alt text](image-4.png)
+![alt text](./img/image-4.png)
 
 ---
 > 남은 시간을 초 단위로 확인
 ```redis
 TTL auth:code:user7
 ```
-![alt text](image-5.png)
+![alt text](./img/image-5.png)
 
-![alt text](image-6.png)
+![alt text](./img/image-6.png)
 
 ---
 ### 1-2. 만료 생성 예제
@@ -80,18 +79,18 @@ TTL auth:code:user7
 ```redis
 SET auth:code:user8 482913 EX 180
 ```
-![alt text](image-7.png)
+![alt text](./img/image-7.png)
 
-![alt text](image-8.png)
+![alt text](./img/image-8.png)
 
 ---
 > 남은 시간을 초 단위로 확인
 ```redis
 TTL auth:code:user8
 ```
-![alt text](image-9.png)
+![alt text](./img/image-9.png)
 
-![alt text](image-10.png)
+![alt text](./img/image-10.png)
 
 ---
 ## 2. 캐시란?
@@ -146,9 +145,9 @@ TTL cache:product:1001
 ```
 
 ---
-![alt text](image-11.png)
+![alt text](./img/image-11.png)
 
-![alt text](image-12.png)
+![alt text](./img/image-12.png)
 
 ---
 상품 정보가 수정되면 오래된 캐시를 삭제합니다.
@@ -160,12 +159,12 @@ TTL cache:product:1001
 > 다음 요청에서는 캐시 실패가 발생하고, 애플리케이션이 변경된 정보를 DB에서 다시 읽어 캐시에 저장합니다. 이를 캐시 무효화라고 합니다.
 
 ---
-![alt text](image-13.png)
+![alt text](./img/image-13.png)
 
 `TTL`의 특별한 반환값도 기억합니다.
 - `-2`: 키가 없음
 
-![alt text](image-14.png)
+![alt text](./img/image-14.png)
 
 ---
 ## 4. 캐시에서 생각할 문제
