@@ -24,10 +24,11 @@ paginate: true
 
 ---
 ## 1. Redis Set
-
-Set은 순서 없이 중복되지 않는 문자열을 저장합니다. 특정 값의 포함 여부를
-빠르게 확인하거나 여러 집합의 관계를 계산할 때 사용합니다.
-
+.
+- `SADD`: Set에 멤버를 추가
+- `SMEMBERS`: Set의 모든 멤버를 조회
+- `SCARD`: Set의 멤버 수를 반환
+- `SISMEMBER`: 특정 값이 Set에 존재하는지 확인 (1=있음, 0=없음)
 ```redis
 DEL demo:set                  # demo:set 키 삭제 (초기화)
 SADD demo:set apple banana apple  # Set에 apple, banana, apple 추가 (중복 apple은 무시됨)
@@ -35,9 +36,6 @@ SMEMBERS demo:set             # Set의 모든 멤버 조회
 SCARD demo:set                # Set의 멤버 수 반환 (2)
 SISMEMBER demo:set apple      # apple이 Set에 있는지 확인 (1=있음, 0=없음)
 ```
-
-`SADD`의 결과는 실제로 새로 추가된 값의 개수입니다. 위 예에서 `apple`은
-두 번 전달되지만 한 번만 저장됩니다.
 
 ---
 ![alt text](./img/image.png)
@@ -47,6 +45,9 @@ SISMEMBER demo:set apple      # apple이 Set에 있는지 확인 (1=있음, 0=�
 ---
 ## 2. 추가, 삭제, 무작위 선택
 
+- `SREM`: Set에서 특정 멤버를 삭제
+- `SRANDMEMBER`: Set에서 랜덤 멤버를 조회 (삭제 안 함)
+- `SPOP`: Set에서 랜덤 멤버를 꺼내고 삭제
 ```redis
 SADD event:participants user1 user2 user3  # Set에 user1, user2, user3 추가
 SREM event:participants user2              # Set에서 user2 제거
@@ -54,12 +55,6 @@ SISMEMBER event:participants user2         # user2가 Set에 있는지 확인 (0
 SRANDMEMBER event:participants             # 랜덤으로 멤버 1개 조회 (제거 안 함)
 SPOP event:participants                    # 랜덤으로 멤버 1개 꺼내기 (제거함)
 ```
-
-- `SRANDMEMBER`: 무작위 값을 반환하지만 삭제하지 않음
-- `SPOP`: 무작위 값을 반환하고 집합에서 삭제
-
-경품 추첨에서 후보를 유지하려면 `SRANDMEMBER`, 한 번 뽑힌 사람을 제외하려면
-`SPOP`을 사용할 수 있습니다.
 
 ---
 ![alt text](./img/image-2.png)
@@ -83,9 +78,6 @@ SDIFF user:1:interests user:2:interests          # 차집합: user1만 가진 �
 | SUNION | 합집합 | redis, python, database, java |
 | SDIFF | 차집합 (기준 - 나머지) | python |
 
-결과를 새 Set에 저장하려면 `SINTERSTORE`, `SUNIONSTORE`, `SDIFFSTORE`를
-사용합니다.
-
 ---
 ![alt text](./img/image-4.png)
 
@@ -105,7 +97,7 @@ SISMEMBER article:100:likes 7  # user7이 좋아요 눌렀는지 확인 (1=눌�
 SREM article:100:likes 7       # user7 좋아요 취소
 ```
 
-사용자 7이 여러 번 요청해도 한 번만 저장됩니다. `SCARD`는 좋아요 수,
+> 사용자 7이 여러 번 요청해도 한 번만 저장됩니다. `SCARD`는 좋아요 수,
 `SISMEMBER`는 현재 사용자의 좋아요 여부를 알려 줍니다.
 
 ---
