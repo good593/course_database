@@ -18,25 +18,30 @@ Set은 순서 없이 중복되지 않는 문자열을 저장합니다. 특정 �
 빠르게 확인하거나 여러 집합의 관계를 계산할 때 사용합니다.
 
 ```redis
-DEL demo:set
-SADD demo:set apple banana apple
-SMEMBERS demo:set
-SCARD demo:set
-SISMEMBER demo:set apple
+DEL demo:set                  # demo:set 키 삭제 (초기화)
+SADD demo:set apple banana apple  # Set에 apple, banana, apple 추가 (중복 apple은 무시됨)
+SMEMBERS demo:set             # Set의 모든 멤버 조회
+SCARD demo:set                # Set의 멤버 수 반환 (2)
+SISMEMBER demo:set apple      # apple이 Set에 있는지 확인 (1=있음, 0=없음)
 ```
 
 `SADD`의 결과는 실제로 새로 추가된 값의 개수입니다. 위 예에서 `apple`은
 두 번 전달되지만 한 번만 저장됩니다.
 
 ---
+![alt text](./img/image.png)
+
+![alt text](./img/image-1.png)
+
+---
 ## 2. 추가, 삭제, 무작위 선택
 
 ```redis
-SADD event:participants user1 user2 user3
-SREM event:participants user2
-SISMEMBER event:participants user2
-SRANDMEMBER event:participants
-SPOP event:participants
+SADD event:participants user1 user2 user3  # Set에 user1, user2, user3 추가
+SREM event:participants user2              # Set에서 user2 제거
+SISMEMBER event:participants user2         # user2가 Set에 있는지 확인 (0=없음)
+SRANDMEMBER event:participants             # 랜덤으로 멤버 1개 조회 (제거 안 함)
+SPOP event:participants                    # 랜덤으로 멤버 1개 꺼내기 (제거함)
 ```
 
 - `SRANDMEMBER`: 무작위 값을 반환하지만 삭제하지 않음
@@ -46,39 +51,58 @@ SPOP event:participants
 `SPOP`을 사용할 수 있습니다.
 
 ---
+![alt text](./img/image-2.png)
+
+![alt text](./img/image-3.png)
+
+---
 ## 3. 집합 연산
 
 ```redis
-SADD user:1:interests redis python database
-SADD user:2:interests redis java database
-SINTER user:1:interests user:2:interests
-SUNION user:1:interests user:2:interests
-SDIFF user:1:interests user:2:interests
+SADD user:1:interests redis python database      # user1의 관심사 추가: redis, python, database
+SADD user:2:interests redis java database        # user2의 관심사 추가: redis, java, database
+SINTER user:1:interests user:2:interests         # 교집합: 둘 다 가진 것 → {redis, database}
+SUNION user:1:interests user:2:interests         # 합집합: 둘 중 하나라도 가진 것 → {redis, python, database, java}
+SDIFF user:1:interests user:2:interests          # 차집합: user1만 가진 것 → {python}
 ```
 
-- `SINTER`: 모든 집합에 공통으로 있는 값
-- `SUNION`: 어느 한 집합에라도 있는 값
-- `SDIFF`: 첫 번째 집합에만 있는 값
+| 명령어 | 의미 | 결과 |
+|--------|------|------|
+| SINTER | 교집합 | redis, database |
+| SUNION | 합집합 | redis, python, database, java |
+| SDIFF | 차집합 (기준 - 나머지) | python |
 
 결과를 새 Set에 저장하려면 `SINTERSTORE`, `SUNIONSTORE`, `SDIFFSTORE`를
 사용합니다.
 
+---
+![alt text](./img/image-4.png)
+
+![alt text](./img/image-5.png)
+
+---
 ## 4. 게시글 좋아요
 
 게시글마다 좋아요를 누른 사용자 번호를 Set으로 저장합니다.
 
 ```redis
-SADD article:100:likes 7
-SADD article:100:likes 8
-SADD article:100:likes 7
-SCARD article:100:likes
-SISMEMBER article:100:likes 7
-SREM article:100:likes 7
+SADD article:100:likes 7       # 게시글 100에 user7 좋아요 추가
+SADD article:100:likes 8       # 게시글 100에 user8 좋아요 추가
+SADD article:100:likes 7       # user7 좋아요 중복 추가 (무시됨)
+SCARD article:100:likes        # 좋아요 수 조회 → 2 (중복 제거된 결과)
+SISMEMBER article:100:likes 7  # user7이 좋아요 눌렀는지 확인 (1=눌렀음)
+SREM article:100:likes 7       # user7 좋아요 취소
 ```
 
 사용자 7이 여러 번 요청해도 한 번만 저장됩니다. `SCARD`는 좋아요 수,
 `SISMEMBER`는 현재 사용자의 좋아요 여부를 알려 줍니다.
 
+---
+![alt text](./img/image-6.png)
+
+![alt text](./img/image-7.png)
+
+---
 ## 5. Set을 선택하는 기준
 
 Set이 적합한 질문은 다음과 같습니다.
@@ -88,45 +112,5 @@ Set이 적합한 질문은 다음과 같습니다.
 - 두 사용자의 공통 관심사는 무엇인가?
 - 중복 없이 태그를 관리하려면 어떻게 할까?
 
-순위나 점수가 필요하면 Sorted Set, 필드와 값이 필요하면 Hash를 사용합니다.
+> 순위나 점수가 필요하면 `Sorted Set`, 필드와 값이 필요하면 `Hash`를 사용합니다.
 
-## 실습. 스터디 관심사 추천
-
-```redis
-SADD student:1:skills python redis sql
-SADD student:2:skills java redis spring
-SADD student:3:skills python django sql
-SINTER student:1:skills student:2:skills
-SINTER student:1:skills student:3:skills
-SUNION student:1:skills student:2:skills student:3:skills
-SDIFF student:1:skills student:2:skills
-```
-
-### 도전 과제
-
-게시글 100과 200을 모두 좋아한 사용자를 찾는 키와 명령을 작성합니다.
-
-## 주의할 점
-
-`SMEMBERS`는 전체 값을 반환합니다. 매우 큰 Set에서는 `SSCAN`으로 나누어
-조회합니다.
-
-```redis
-SSCAN article:100:likes 0 COUNT 100
-```
-
-집합 연산도 입력 집합이 매우 크면 서버에 부담을 줄 수 있습니다. 데이터 크기와
-호출 빈도를 확인하고 필요하면 결과를 미리 계산하거나 범위를 나눕니다.
-
-## 확인 문제
-
-1. `SADD`로 같은 값을 두 번 추가하면 어떻게 되나요?
-2. 좋아요 수를 구하는 명령은 무엇인가요?
-3. 두 사용자의 공통 관심사를 구하는 명령은 무엇인가요?
-4. `SRANDMEMBER`와 `SPOP`의 차이는 무엇인가요?
-
-## 정리
-
-- Set은 중복 없는 값과 포함 여부 확인에 적합합니다.
-- 집합 연산으로 공통점과 차이점을 구할 수 있습니다.
-- 큰 Set 전체를 조회할 때는 `SMEMBERS` 대신 `SSCAN`을 고려합니다.
