@@ -9,42 +9,61 @@ style: |
 marp: true
 paginate: true
 ---
-# 9차시. 고급 자료구조
+# 고급 자료구조
 
-## 학습 목표
+---
+## 특징 
 
-- Bitmap, HyperLogLog, Geospatial, Stream의 용도를 구분할 수 있습니다.
-- 각 자료구조의 대표 명령을 실행할 수 있습니다.
-- 정확도, 메모리, 처리 보장 사이의 선택을 설명할 수 있습니다.
+| 자료구조 | 특징 | 대표 명령어 | 활용 예시 |
+|----------|------|-------------|-----------|
+| Bitmap | 0/1 비트로 데이터 저장, 메모리 매우 적게 사용 | `SETBIT`, `GETBIT`, `BITCOUNT` | 출석 체크, 읽음 여부 |
+| HyperLogLog | 중복 제거된 개수 근사치 추정, 오차 약 0.81% | `PFADD`, `PFCOUNT` | 순 방문자 수(UV) 집계 |
+| Geospatial | 위도/경도 저장 후 거리 계산 및 반경 검색 | `GEOADD`, `GEODIST`, `GEOSEARCH` | 주변 매장 찾기 |
+| Stream | 시간 순서대로 데이터 저장, 메시지 큐 | `XADD`, `XREAD`, `XLEN` | 로그 수집, 이벤트 처리 |
 
-이번 차시는 모든 명령을 암기하기보다 어떤 문제에 어떤 자료구조가 적합한지
-판단하는 데 초점을 둡니다.
+---
+## 선택 기준
 
+| 요구사항 | 자료구조 |
+|---|---|
+| 사용자별 출석 여부와 출석자 수 | Bitmap |
+| 아주 많은 고유 방문자의 대략적인 수 | HyperLogLog |
+| 반경 안의 가까운 매장 | Geospatial |
+| 시간 순 이벤트와 소비자 처리 | Stream |
+
+---
 ## 1. Bitmap: 예/아니오 기록
 
-Bitmap은 별도의 자료형이라기보다 String의 각 비트를 다루는 방식입니다.
-사용자 번호와 같은 정수를 비트 위치로 사용해 출석, 로그인 여부, 기능 사용 여부를
-작은 메모리로 기록할 수 있습니다.
-
+- `SETBIT`: 특정 offset 위치의 비트를 0 또는 1로 설정
+- `GETBIT`: 특정 offset 위치의 비트 값을 조회 (1=켜짐, 0=꺼짐)
+- `BITCOUNT`: 비트 값이 1인 개수를 반환
 ```redis
-SETBIT attendance:2026-06-19 1 1
-SETBIT attendance:2026-06-19 3 1
-SETBIT attendance:2026-06-19 7 1
-GETBIT attendance:2026-06-19 3
-GETBIT attendance:2026-06-19 4
-BITCOUNT attendance:2026-06-19
+SETBIT attendance:2026-06-19 1 1  # user1 출석 처리 (offset 1 → 1)
+SETBIT attendance:2026-06-19 3 1  # user3 출석 처리 (offset 3 → 1)
+SETBIT attendance:2026-06-19 7 1  # user7 출석 처리 (offset 7 → 1)
+GETBIT attendance:2026-06-19 3    # user3 출석 여부 확인 → 1 (출석)
+GETBIT attendance:2026-06-19 4    # user4 출석 여부 확인 → 0 (미출석)
+BITCOUNT attendance:2026-06-19    # 전체 출석 인원 수 조회 → 3
 ```
 
-사용자 번호가 지나치게 크고 듬성듬성하면 중간 공간까지 필요하므로 효율이
-낮아질 수 있습니다. 비트 위치로 사용할 안정적인 정수 번호가 있을 때 적합합니다.
 
-여러 날짜의 출석자를 계산할 수도 있습니다.
-
+---
+- `BITOP`: 여러 Bitmap 간의 비트 연산을 수행
 ```redis
-BITOP AND attendance:both attendance:2026-06-19 attendance:2026-06-20
-BITCOUNT attendance:both
-```
+# 6/19와 6/20 둘 다 출석한 유저 계산 → attendance:both에 저장
+BITOP AND attendance:both attendance:2026-06-19 attendance:2026-06-20  
 
+# 이틀 연속 출석 인원 수 조회
+BITCOUNT attendance:both                                                
+```
+| 연산 | 의미 | 활용 예시 |
+|------|------|-----------|
+| `AND` | 둘 다 1인 것만 | 이틀 **모두** 출석한 유저 |
+| `OR` | 하나라도 1인 것 | 이틀 중 **한 번이라도** 출석한 유저 |
+| `XOR` | 둘 중 하나만 1인 것 | **한 날만** 출석한 유저 |
+| `NOT` | 0 <-> 1 반전 | **미출석** 유저 |
+
+---
 ## 2. HyperLogLog: 고유 개수 추정
 
 HyperLogLog는 실제 방문자 목록을 보관하는 대신 고유한 값의 개수를 매우 적은
@@ -62,6 +81,7 @@ PFCOUNT visitors:two-days
 원본 데이터베이스를 사용합니다. 대규모 페이지의 대략적인 고유 방문자 수처럼
 작은 오차를 허용할 수 있는 통계에 적합합니다.
 
+---
 ## 3. Geospatial: 위치 기반 검색
 
 경도, 위도, 멤버 순서로 위치를 저장합니다.
@@ -77,6 +97,7 @@ GEOSEARCH stores FROMLONLAT 127.0 37.5 BYRADIUS 10 km ASC
 위치 검색은 지구 표면상의 근거리 검색에 유용하지만 복잡한 지도 도형과 공간
 분석은 전문 공간 데이터베이스가 더 적합합니다.
 
+---
 ## 4. Stream: 이벤트 기록
 
 Stream은 시간 순서가 있는 이벤트 로그를 저장합니다. 각 항목은 고유 ID와
