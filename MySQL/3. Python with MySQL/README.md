@@ -1,14 +1,13 @@
 # Jupyter Notebook으로 MySQL 사용하기
 
 이번 차시는 Python 코드에서 MySQL에 연결하고 SQL을 실행하는 기초 실습입니다.
-ORM이나 SQLAlchemy는 사용하지 않고, `mysql-connector-python`으로 SQL을 직접
-실행합니다.
+ORM이나 SQLAlchemy는 사용하지 않고, `PyMySQL`로 SQL을 직접 실행합니다.
 
 ## 학습 목표
 
 1. Jupyter Notebook 실습 환경을 준비합니다.
 2. Python에서 MySQL 연결 정보를 설정합니다.
-3. `mysql.connector`로 `SELECT`, `INSERT`, `UPDATE`, `DELETE`를 실행합니다.
+3. `pymysql`로 `SELECT`, `INSERT`, `UPDATE`, `DELETE`를 실행합니다.
 4. 조회 결과를 Python 객체와 pandas DataFrame으로 확인합니다.
 
 ## 실습 환경 준비
@@ -57,7 +56,7 @@ jupyter notebook
 
 ### 3-2. Python에서 MySQL 연결하기
 
-- `mysql.connector.connect()` 사용
+- `pymysql.connect()` 사용
 - 연결 설정 딕셔너리 만들기
 - `SELECT VERSION()`으로 연결 확인
 - `mysql_db.py`의 `MySQLDB` 연결 클래스 살펴보기
@@ -74,7 +73,7 @@ jupyter notebook
 
 | 파일 | 설명 |
 |---|---|
-| `requirements.txt` | Jupyter, pandas, python-dotenv, mysql-connector-python 설치 목록 |
+| `requirements.txt` | Jupyter, pandas, python-dotenv, PyMySQL 설치 목록 |
 | `mysql_db.py` | MySQL 연결을 재사용하기 위한 간단한 클래스 |
 | `.env.example` | 데이터베이스 접속 정보 예시 |
 | `01_python_mysql.ipynb` | Jupyter 실습 노트북 |

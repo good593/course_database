@@ -1,4 +1,4 @@
-import mysql.connector
+import pymysql
 
 
 class Singleton(type):
@@ -12,12 +12,14 @@ class Singleton(type):
 
 class MySQLDB(metaclass=Singleton):
     def __init__(self, db_config: dict):
-        self.conn = mysql.connector.connect(
+        self.conn = pymysql.connect(
             host=db_config["host"],
             port=int(db_config["port"]),
             database=db_config["database"],
             user=db_config["user"],
             password=db_config["password"],
+            charset="utf8mb4",
+            cursorclass=pymysql.cursors.DictCursor,
         )
 
     def get_conn(self):
