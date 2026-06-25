@@ -34,18 +34,28 @@ paginate: true
 ---
 ## 1. Bitmap: 예/아니오 기록
 
+---
 - `SETBIT`: 특정 offset 위치의 비트를 0 또는 1로 설정
-- `GETBIT`: 특정 offset 위치의 비트 값을 조회 (1=켜짐, 0=꺼짐)
-- `BITCOUNT`: 비트 값이 1인 개수를 반환
 ```redis
 SETBIT attendance:2026-06-19 1 1  # user1 출석 처리 (offset 1 → 1)
 SETBIT attendance:2026-06-19 3 1  # user3 출석 처리 (offset 3 → 1)
 SETBIT attendance:2026-06-19 7 1  # user7 출석 처리 (offset 7 → 1)
+```
+![alt text](./img/image.png)
+
+![alt text](./img/image-1.png)
+
+---
+- `GETBIT`: 특정 offset 위치의 비트 값을 조회 (1=켜짐, 0=꺼짐)
+- `BITCOUNT`: 비트 값이 1인 개수를 반환
+```redis
 GETBIT attendance:2026-06-19 3    # user3 출석 여부 확인 → 1 (출석)
 GETBIT attendance:2026-06-19 4    # user4 출석 여부 확인 → 0 (미출석)
 BITCOUNT attendance:2026-06-19    # 전체 출석 인원 수 조회 → 3
 ```
+![alt text](./img/image-2.png)
 
+![alt text](./img/image-3.png)
 
 ---
 - `BITOP`: 여러 Bitmap 간의 비트 연산을 수행
@@ -56,6 +66,12 @@ BITOP AND attendance:both attendance:2026-06-19 attendance:2026-06-20
 # 이틀 연속 출석 인원 수 조회
 BITCOUNT attendance:both                                                
 ```
+![alt text](./img/image-5.png)
+
+![alt text](./img/image-4.png)
+
+---
+
 | 연산 | 의미 | 활용 예시 |
 |------|------|-----------|
 | `AND` | 둘 다 1인 것만 | 이틀 **모두** 출석한 유저 |
@@ -65,98 +81,134 @@ BITCOUNT attendance:both
 
 ---
 ## 2. HyperLogLog: 고유 개수 추정
+- HyperLogLog는 `메모리를 거의 사용하지 않고 수억 건의 고유 개수를 추정`할 수 있는 자료구조입니다. 
+- `결과는 근사치`이므로 과금, 정산, 사용자 목록 조회처럼 정확성이 필요한 경우에는 사용할 수 없습니다. 
+- 대신 웹사이트의 순 방문자(UV), 앱 활성 사용자 수, 광고 노출 사용자 수 등 `작은 오차를 허용할 수 있는 통계 분석에 적합`합니다.
 
-HyperLogLog는 실제 방문자 목록을 보관하는 대신 고유한 값의 개수를 매우 적은
-메모리로 추정합니다.
-
+---
+- `PFADD`: HyperLogLog에 요소(Element)를 추가
+- `PFCOUNT`: HyperLogLog에 저장된 고유한 요소(Unique Elements)의 개수를 조회
 ```redis
+# 2026-06-19 방문자(user1, user2, user3)를 HyperLogLog에 추가
+# (중복된 user1은 자동으로 하나의 방문자로 처리)
 PFADD visitors:2026-06-19 user1 user2 user3 user1
+
+# 2026-06-19의 예상 순 방문자(Unique Visitors) 수 조회
+# 결과: 3
 PFCOUNT visitors:2026-06-19
+```
+
+---
+![alt text](./img/image-6.png)
+
+![alt text](./img/image-7.png)
+
+---
+- `PFMERGE`: 여러 HyperLogLog를 하나로 합치기 
+```redis
+# 2026-06-20 방문자(user2, user4)를 HyperLogLog에 추가
 PFADD visitors:2026-06-20 user2 user4
+
+# 두 날짜의 HyperLogLog를 하나로 병합
+# (중복 사용자(user2)는 한 명으로 계산)
 PFMERGE visitors:two-days visitors:2026-06-19 visitors:2026-06-20
+
+# 병합된 HyperLogLog의 예상 순 방문자 수 조회
+# 결과: 4 (user1, user2, user3, user4)
 PFCOUNT visitors:two-days
 ```
 
-결과는 근사치입니다. 정확한 사용자 목록이나 정확한 과금 인원이 필요하면 Set이나
-원본 데이터베이스를 사용합니다. 대규모 페이지의 대략적인 고유 방문자 수처럼
-작은 오차를 허용할 수 있는 통계에 적합합니다.
+---
+![alt text](./img/image-8.png)
+
+![alt text](./img/image-9.png)
 
 ---
 ## 3. Geospatial: 위치 기반 검색
+> 경도, 위도, 멤버 순서로 위치를 저장합니다.
 
-경도, 위도, 멤버 순서로 위치를 저장합니다.
+- 주변 매장, 배달 가능 지점, 가까운 시설 검색에 활용할 수 있습니다. 
+- Redis의 위치 검색은 지구 표면상의 근거리 검색에 유용하지만 복잡한 지도 도형과 공간 분석은 전문 공간 데이터베이스가 더 적합합니다.
 
+---
+- `GEOADD`: Redis GEO 자료구조에 위치(좌표)를 저장
 ```redis
+# 서울 매장 위치(경도 126.9780, 위도 37.5665)를 stores에 추가
 GEOADD stores 126.9780 37.5665 seoul-store
+
+# 부산 매장 위치(경도 129.0756, 위도 35.1796)를 stores에 추가
 GEOADD stores 129.0756 35.1796 busan-store
+```
+![alt text](./img/image-10.png)
+
+![alt text](./img/image-11.png)
+
+---
+- `GEODIST`: Redis GEO 자료구조에 저장된 두 위치 사이의 거리를 계산
+```redis
+# 서울 매장과 부산 매장 사이의 거리를 km 단위로 조회
 GEODIST stores seoul-store busan-store km
+```
+![alt text](./img/image-12.png)
+
+![alt text](./img/image-13.png)
+
+---
+- `GEOSEARCH`: Redis GEO 자료구조에서 특정 위치를 기준으로 반경 또는 영역 안에 있는 위치를 검색
+```redis
+# 경도 127.0, 위도 37.5를 기준으로
+# 반경 10km 이내의 매장을 가까운 순(ASC)으로 검색
 GEOSEARCH stores FROMLONLAT 127.0 37.5 BYRADIUS 10 km ASC
 ```
+![alt text](./img/image-14.png)
 
-주변 매장, 배달 가능 지점, 가까운 시설 검색에 활용할 수 있습니다. Redis의
-위치 검색은 지구 표면상의 근거리 검색에 유용하지만 복잡한 지도 도형과 공간
-분석은 전문 공간 데이터베이스가 더 적합합니다.
+![alt text](./img/image-15.png)
 
 ---
 ## 4. Stream: 이벤트 기록
+> Stream은 시간 순서가 있는 이벤트 로그를 저장합니다. 각 항목은 고유 ID와 필드-값 쌍을 가집니다.
 
-Stream은 시간 순서가 있는 이벤트 로그를 저장합니다. 각 항목은 고유 ID와
-필드-값 쌍을 가집니다.
-
+---
+- `XADD`: Redis Stream에 새로운 메시지(이벤트)를 추가
+- `*`를 사용하면 Redis가 ID를 생성합니다. 새 이벤트를 기다려 읽을 수 있습니다.
 ```redis
+# 주문(order_id=1001)이 생성되었음을 Stream에 추가
 XADD stream:orders * order_id 1001 status created
+
+# 주문(order_id=1002)가 생성되었음을 Stream에 추가
 XADD stream:orders * order_id 1002 status created
+```
+![alt text](./img/image-16.png)
+
+![alt text](./img/image-17.png)
+
+---
+- `XRANGE`: Redis Stream에 저장된 메시지(이벤트)를 특정 범위만큼 조회
+- `XLEN`: Redis Stream에 저장된 메시지(이벤트)의 개수를 조회
+```redis
+# Stream에 저장된 모든 메시지를 처음(-)부터 마지막(+)까지 조회
 XRANGE stream:orders - +
+
+# Stream에 저장된 전체 메시지(이벤트) 개수 조회
 XLEN stream:orders
 ```
 
-`*`를 사용하면 Redis가 ID를 생성합니다. 새 이벤트를 기다려 읽을 수 있습니다.
+---
+![alt text](./img/image-18.png)
 
+![alt text](./img/image-19.png)
+
+---
+- `XREAD`: Redis Stream에서 새로운 메시지(이벤트)를 읽기
+- `$`는 현재 마지막 메시지 이후부터 읽기 시작(기존 메시지는 읽지 않음)
 ```redis
+# stream:orders에서 새로운 이벤트를 읽음
+# BLOCK 10000은 새로운 이벤트가 없으면 최대 10초(10,000ms) 동안 대기
 XREAD BLOCK 10000 STREAMS stream:orders $
 ```
+![alt text](./img/image-20.png)
 
-`$`는 명령 실행 뒤에 들어오는 새 항목부터 읽겠다는 뜻입니다.
+> Redis Insight Workbench가 XREAD 같은 Blocking 명령을 지원하지 않습니다.
 
-### 소비자 그룹 맛보기
+![alt text](./img/image-21.png)
 
-```redis
-XGROUP CREATE stream:orders order-workers 0 MKSTREAM
-XREADGROUP GROUP order-workers worker-1 COUNT 1 STREAMS stream:orders >
-XACK stream:orders order-workers 1680000000000-0
-```
-
-그룹 생성 시 `0`을 사용했으므로 기존 항목부터 읽습니다. `XACK`의 마지막 값에는
-실제로 읽은 메시지 ID를 넣습니다. 소비자 그룹은 여러
-작업자에게 메시지를 나누고 처리 확인 상태를 관리합니다. 재처리, 보관 길이,
-중복 처리 방지는 애플리케이션에서 추가로 설계해야 합니다.
-
-## 5. 선택 기준
-
-| 요구사항 | 자료구조 |
-|---|---|
-| 사용자별 출석 여부와 출석자 수 | Bitmap |
-| 아주 많은 고유 방문자의 대략적인 수 | HyperLogLog |
-| 반경 안의 가까운 매장 | Geospatial |
-| 시간 순 이벤트와 소비자 처리 | Stream |
-
-## 실습. 서비스 활동 기록
-
-1. Bitmap에 사용자 2, 5, 8의 오늘 로그인 여부를 기록합니다.
-2. 오늘 로그인한 사용자 수를 구합니다.
-3. HyperLogLog에 페이지 방문자 5명을 추가하되 한 명은 중복 입력합니다.
-4. 고유 방문자 추정값을 조회합니다.
-5. Stream에 로그인 이벤트 두 건을 추가하고 전체 이벤트를 조회합니다.
-
-## 확인 문제
-
-1. 정확한 방문자 목록이 필요할 때 HyperLogLog가 적합하지 않은 이유는 무엇인가요?
-2. Bitmap이 효율적이려면 비트 위치로 어떤 값이 필요하나요?
-3. Stream 항목의 `*`는 무엇을 의미하나요?
-4. 주변 매장 검색에 사용할 수 있는 자료구조는 무엇인가요?
-
-## 정리
-
-- Bitmap은 작은 공간으로 참·거짓 상태를 기록합니다.
-- HyperLogLog는 고유 개수를 근사하여 메모리를 절약합니다.
-- Geospatial은 근거리 위치 검색, Stream은 이벤트 처리에 사용합니다.
