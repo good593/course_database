@@ -33,7 +33,7 @@ CRUD 실습 전에는 샘플 테이블과 데이터를 생성합니다. PowerShe
 SQL 파일 내용을 컨테이너 안의 `psql`로 전달합니다.
 
 ```shell
-Get-Content -Raw -Encoding UTF8 "2. PostgreSQL DML\00_setup_sample_data.sql" | docker exec -i postgres-db psql -U admin -d deepagent_db
+Get-Content -Raw -Encoding UTF8 "2. PostgreSQL DML\00_setup_sample_data.sql" | docker exec -i postgres-db psql -U admin -d examples_db
 ```
 
 로컬에 `psql`이 설치되어 있고 직접 접속한 상태라면 `\i` 명령을 사용할 수 있습니다.

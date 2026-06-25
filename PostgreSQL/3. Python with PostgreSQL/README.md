@@ -36,7 +36,7 @@ pip install -r requirements.txt
 ```text
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=deepagent_db
+DB_NAME=examples_db
 DB_USER=admin
 DB_PASSWORD=admin123
 ```
