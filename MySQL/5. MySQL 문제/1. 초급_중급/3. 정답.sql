@@ -1,4 +1,4 @@
--- 문제3: 아래 ERD를 참고하여 테이블을 생성하세요.
+-- 문제 3 정답: 아래 ERD를 참고하여 테이블을 생성하세요.
 
 -- 데이터베이스 생성
 CREATE DATABASE  IF NOT EXISTS online_shop;

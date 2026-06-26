@@ -1,5 +1,5 @@
 
--- 문제1: 데이터베이스 생성
+-- 문제 1 정답: 데이터베이스 생성
 -- IF NOT EXISTS를 사용하면 같은 데이터베이스가 있어도 오류 없이 넘어갑니다.
 CREATE DATABASE  IF NOT EXISTS online_shop;
 
@@ -7,7 +7,7 @@ CREATE DATABASE  IF NOT EXISTS online_shop;
 USE online_shop;
 
 
--- 문제2: 테이블 생성
+-- 문제 2 정답: 테이블 생성
 -- 같은 이름의 테이블이 있으면 새로 만들 수 없으므로 먼저 삭제합니다.
 DROP TABLE IF EXISTS users;
 

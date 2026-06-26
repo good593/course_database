@@ -7,11 +7,15 @@ CREATE DATABASE IF NOT EXISTS mysql_ddl_practice
 
 USE mysql_ddl_practice;
 
+-- 공통 준비: 정답을 여러 번 실행해도 같은 상태에서 시작하도록 기존 테이블을 정리합니다.
 -- 외래키 관계가 있으므로 자식 테이블(practice_enrollments)을 먼저 삭제합니다.
 DROP TABLE IF EXISTS practice_enrollments;
 DROP TABLE IF EXISTS practice_courses;
 DROP TABLE IF EXISTS practice_students;
 
+-- ###############################################
+-- 문제 1 정답: 수강생 테이블 만들기
+-- ###############################################
 -- 수강생 테이블: NOT NULL, UNIQUE, DEFAULT, PRIMARY KEY를 확인하는 예제입니다.
 CREATE TABLE practice_students (
     student_id INT AUTO_INCREMENT COMMENT '수강생을 식별하는 자동 증가 기본키',
@@ -22,6 +26,9 @@ CREATE TABLE practice_students (
     PRIMARY KEY (student_id)
 ) COMMENT = 'DDL 실습용 수강생 정보';
 
+-- ###############################################
+-- 문제 2 정답: 강의 테이블 만들기
+-- ###############################################
 -- 강의 테이블: CHECK와 ENUM으로 입력 가능한 값을 제한합니다.
 CREATE TABLE practice_courses (
     course_id INT AUTO_INCREMENT COMMENT '강의를 식별하는 자동 증가 기본키',
@@ -32,6 +39,9 @@ CREATE TABLE practice_courses (
     PRIMARY KEY (course_id)
 ) COMMENT = 'DDL 실습용 강의 정보';
 
+-- ###############################################
+-- 문제 3 정답: 수강 신청 테이블 만들기
+-- ###############################################
 -- 수강 신청 테이블: 수강생과 강의를 연결하는 관계 테이블입니다.
 CREATE TABLE practice_enrollments (
     enrollment_id INT AUTO_INCREMENT COMMENT '수강 신청을 식별하는 자동 증가 기본키',
@@ -45,42 +55,3 @@ CREATE TABLE practice_enrollments (
     CONSTRAINT fk_practice_enrollments_course
         FOREIGN KEY (course_id) REFERENCES practice_courses(course_id)
 ) COMMENT = 'DDL 실습용 수강 신청 정보';
-
--- 외래키가 없는 부모 테이블부터 데이터를 입력합니다.
-INSERT INTO practice_students (name, email, birth_date)
-VALUES
-    ('김민준', 'minjun.practice@example.com', '2001-03-12'),
-    ('이서연', 'seoyeon.practice@example.com', '2000-07-22');
-
-INSERT INTO practice_courses (title, price, level)
-VALUES
-    ('SQL 기초', 120000, 'beginner'),
-    ('Python 기초', 100000, 'beginner');
-
--- practice_enrollments는 위에서 만든 student_id, course_id만 참조할 수 있습니다.
-INSERT INTO practice_enrollments (student_id, course_id)
-VALUES
-    (1, 1),
-    (1, 2),
-    (2, 1);
-
--- 테이블과 컬럼에 지정한 COMMENT가 잘 들어갔는지 확인합니다.
-SHOW TABLE STATUS LIKE 'practice_students';
-SHOW FULL COLUMNS FROM practice_students;
-
-SELECT *
-FROM practice_students;
-
-SELECT *
-FROM practice_courses;
-
-SELECT *
-FROM practice_enrollments;
-
--- 오류 확인용 예시입니다. 하나씩 주석을 풀고 실행합니다.
--- 실패 메시지를 읽으면서 어떤 제약조건이 동작했는지 확인해 보세요.
-
--- INSERT INTO practice_students (email) VALUES ('noname.practice@example.com');
--- INSERT INTO practice_students (name, email) VALUES ('중복', 'minjun.practice@example.com');
--- INSERT INTO practice_courses (title, price, level) VALUES ('오류 강의', -1, 'beginner');
--- INSERT INTO practice_enrollments (student_id, course_id) VALUES (999, 1);

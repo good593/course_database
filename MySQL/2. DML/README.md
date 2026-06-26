@@ -1,58 +1,20 @@
 ---
+style: |
+  img {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
 marp: true
 paginate: true
 ---
+# DML(Data Manipulation Language)
+> DML은 데이터를  삽입(`INSERT`), 수정(`UPDATE`),  삭제(`DELETE`), 조회(`SELECT`)하는 구문  
 
-# MySQL DML/DQL 기초
-
-DDL이 테이블의 구조를 정의한다면, DML과 DQL은 테이블 안의 데이터를 다룹니다.
-
-- DML: `INSERT`, `UPDATE`, `DELETE`
-- DQL: `SELECT`
-
----
-
-## 이번 차시의 목표
-
-1. 샘플 데이터를 준비하고 CRUD를 실행합니다.
-2. `WHERE`, `ORDER BY`, `LIMIT`으로 필요한 행을 조회합니다.
-3. `GROUP BY`, `HAVING`으로 데이터를 집계합니다.
-4. `JOIN`으로 여러 테이블의 데이터를 함께 조회합니다.
-5. 서브쿼리와 CTE로 복잡한 조회를 단계적으로 작성합니다.
-
----
-
-## 실습 데이터 준비
-
-이번 장에서는 실습 데이터를 두 가지로 나누어 사용합니다.
-
-- CRUD: `00_setup_sample_data.sql`의 작은 교육 서비스 데이터
-- DQL: `DQL/mysqlsampledatabase.sql`의 `classicmodels` 주문/상품 데이터
-
-CRUD 실습 전에는 샘플 테이블과 데이터를 생성합니다.
-
-```shell
-Get-Content -Raw -Encoding UTF8 "2. DML\00_setup_sample_data.sql" | docker-compose exec -T db mysql -u root -proot1234
-```
-
-DQL 실습 전에는 `classicmodels` 샘플 데이터베이스를 복원합니다.
-
-```shell
-Get-Content -Raw -Encoding UTF8 "2. DML\DQL\mysqlsampledatabase.sql" | docker-compose exec -T db mysql -u root -proot1234
-```
-
----
-
-## CRUD
-
-| 작업 | SQL |
-|---|---|
-| 생성 | `INSERT` |
-| 조회 | `SELECT` |
-| 수정 | `UPDATE` |
-| 삭제 | `DELETE` |
-
-CRUD 실습은 `01_CRUD.sql`에서 확인합니다.
+하지만 실무 및 교육 관점에서는 보통 아래와 같이 구분함 
+- DML(데이터를 변경): `INSERT`, `UPDATE`, `DELETE`
+- DQL(데이터를 조회): `SELECT`
 
 ---
 
@@ -114,7 +76,9 @@ WHERE MSRP > (
 );
 ```
 
-MySQL 8 이상에서는 CTE를 사용할 수 있습니다.
+---
+> MySQL 8 이상에서는 CTE를 사용할 수 있습니다.
+> `CTE(Common Table Expression)`는 WITH 문을 사용하여 임시 테이블처럼 사용할 수 있는 결과 집합을 정의하는 기능
 
 ```sql
 WITH customer_order_stats AS (
@@ -127,23 +91,3 @@ FROM customer_order_stats
 WHERE order_count >= 5;
 ```
 
----
-
-## 실습 파일 순서
-
-```text
-00_setup_sample_data.sql
-01_CRUD.sql
-DQL/README.md
-DQL/mysqlsampledatabase.sql
-DQL/01_조건조회.sql
-DQL/02_집계.sql
-DQL/03_조인.sql
-DQL/04_서브쿼리_CTE.sql
-실습문제/실습문제.md
-실습문제/정답.sql
-```
-
-`01_CRUD.sql`은 `00_setup_sample_data.sql` 실행 후 사용하는 것을 기준으로 합니다.
-`DQL`의 조회 파일은 `mysqlsampledatabase.sql`로 `classicmodels` 데이터베이스를
-복원한 뒤 사용하는 것을 기준으로 합니다.

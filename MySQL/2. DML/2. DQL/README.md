@@ -1,3 +1,14 @@
+---
+style: |
+  img {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+marp: true
+paginate: true
+---
 # MySQL DQL 기초
 
 이 폴더의 DQL 실습은 `mysqlsampledatabase.sql`에 들어 있는 `classicmodels` 샘플

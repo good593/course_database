@@ -1,5 +1,5 @@
 
--- 문제1: 특정 고객의 주문 내역 확인
+-- 문제 1 정답: 특정 고객의 주문 내역 확인
 -- customers와 orders는 customerNumber를 기준으로 연결됩니다.
 SELECT 
     c.customerName
@@ -12,7 +12,7 @@ JOIN orders AS o
 WHERE 1=1
   AND c.customerName = 'Atelier graphique';
 
--- 문제 2: 특정 제품 라인의 제품 목록 확인
+-- 문제 2 정답: 특정 제품 라인의 제품 목록 확인
 -- products와 productlines는 productLine 컬럼을 기준으로 연결됩니다.
 SELECT 
     p.productCode
@@ -24,7 +24,7 @@ JOIN productlines AS pl
 WHERE 1=1
   AND pl.productLine = 'Classic Cars';
 
--- 문제 3: 특정 고객의 결제 내역 조회
+-- 문제 3 정답: 특정 고객의 결제 내역 조회
 -- 결제 금액 조건까지 함께 사용해 특정 고객의 5000 이상 결제만 조회합니다.
 SELECT 
     c.customerName

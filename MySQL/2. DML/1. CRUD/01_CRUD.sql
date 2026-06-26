@@ -4,11 +4,15 @@
 
 USE examplesdb;
 
--- CREATE: 데이터 추가
+-- ###############################################
 -- INSERT는 테이블에 새로운 행(row)을 추가합니다.
+-- ###############################################
 INSERT INTO students (name, email, birth_date, phone)
 VALUES ('오하늘', 'haneul@example.com', '2002-04-03', '010-7777-7777');
 
+-- ###############################################
+-- READ: 데이터 조회
+-- ###############################################
 -- 방금 입력한 데이터만 확인하기 위해 email로 조건을 좁힙니다.
 SELECT
     student_id,
@@ -28,7 +32,9 @@ SELECT
 FROM students
 ORDER BY student_id;
 
+-- ###############################################
 -- UPDATE: 데이터 수정
+-- ###############################################
 -- WHERE 없이 UPDATE를 실행하면 모든 행이 바뀔 수 있으므로 항상 조건을 확인합니다.
 UPDATE students
 SET phone = '010-7777-0000'
@@ -42,7 +48,9 @@ SELECT
 FROM students
 WHERE email = 'haneul@example.com';
 
+-- ###############################################
 -- DELETE: 데이터 삭제
+-- ###############################################
 -- DELETE도 WHERE 조건이 없으면 모든 행을 삭제할 수 있으므로 주의합니다.
 DELETE FROM students
 WHERE email = 'haneul@example.com';
