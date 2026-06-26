@@ -9,61 +9,133 @@ style: |
 marp: true
 paginate: true
 ---
-# MySQL DQL 기초
+# DQL(Data Query Language)
+> DQL(Data Query Language)은 데이터베이스에서 원하는 데이터를 조회하는 SQL 명령어
 
-이 폴더의 DQL 실습은 `mysqlsampledatabase.sql`에 들어 있는 `classicmodels` 샘플
-데이터베이스를 기준으로 합니다. `classicmodels`는 미니어처 상품 판매 회사를
-다루며, 조건 조회, 집계, 조인, 서브쿼리, CTE를 연습하기 좋은 관계형 데이터
-구조를 갖고 있습니다.
+---
+## 조건 조회 (Filtering)
+- 조건 조회는 원하는 조건에 맞는 데이터만 조회하는 방법
 
-## mysqlsampledatabase.sql 사용 안내
-
-`mysqlsampledatabase.sql`은 데이터베이스 생성, 테이블 생성, 샘플 데이터 입력을
-모두 포함합니다. 주요 테이블은 다음과 같습니다.
-
-| 테이블 | 설명 |
-|---|---|
-| `productlines` | 상품 라인 |
-| `products` | 상품 정보 |
-| `customers` | 고객 정보 |
-| `orders` | 주문 |
-| `orderdetails` | 주문 상세 |
-| `payments` | 결제 |
-| `employees` | 직원 |
-| `offices` | 사무실 |
-
-## 실행 예시
-
-PowerShell에서 다음 명령으로 샘플 DB를 복원합니다.
-
-```shell
-Get-Content -Raw -Encoding UTF8 "2. DML\DQL\mysqlsampledatabase.sql" | docker-compose exec -T db mysql -u root -proot1234
+```sql
+SELECT
+  컬럼
+FROM 테이블
+WHERE 1=1
+  and 조건;
 ```
 
-복원 후에는 `classicmodels` 데이터베이스에 접속합니다.
+---
+### 자주 사용하는 비교 연산자
+| 연산자      | 의미     |
+| -------- | ------ |
+| =        | 같다     |
+| != 또는 <> | 같지 않다  |
+| >        | 크다     |
+| >=       | 크거나 같다 |
+| <        | 작다     |
+| <=       | 작거나 같다 |
 
-```shell
-docker-compose exec db mysql -u root -p classicmodels
+---
+### 논리 연산자
+| 연산자 | 의미       |
+| --- | -------- |
+| AND | 모두 만족    |
+| OR  | 하나 이상 만족 |
+| NOT | 조건 부정    |
+
+---
+### 자주 사용하는 조건
+| 조건      | 설명         |
+| ------- | ---------- |
+| BETWEEN | 범위 조회      |
+| IN      | 여러 값 중 하나  |
+| LIKE    | 문자열 패턴 검색  |
+| IS NULL | NULL 여부 확인 |
+
+---
+### 실행 순서 
+> 먼저 테이블을 선택하고 → 조건을 적용한 후 → 필요한 컬럼을 조회합니다.
+
+```
+FROM
+ ↓
+WHERE
+ ↓
+SELECT
 ```
 
-## 강의 순서
+---
+## 집계 (Aggregation)
+- 집계 함수는 여러 행을 하나의 결과로 계산하는 함수
 
-1. `01_조건조회.sql`: `products`, `customers`, `orders`에서 필요한 행 찾기
-2. `02_집계.sql`: 상품 수, 결제 금액, 주문 수 등을 집계
-3. `03_조인.sql`: 고객, 주문, 상품, 결제, 직원 테이블 연결
-4. `04_서브쿼리_CTE.sql`: 평균보다 비싼 상품, 특정 상품 주문 고객, 단계적 분석
+---
+### 대표적인 집계 함수
+| 함수      | 설명   |
+| ------- | ---- |
+| COUNT() | 행 개수 |
+| SUM()   | 합계   |
+| AVG()   | 평균   |
+| MAX()   | 최대값  |
+| MIN()   | 최소값  |
 
-## 핵심 관계
+---
+### GROUP BY
+> 같은 값을 가진 데이터를 하나의 그룹으로 묶습니다.
 
-```text
-customers 1 ─ N orders 1 ─ N orderdetails N ─ 1 products
-products N ─ 1 productlines
-customers 1 ─ N payments
-employees 1 ─ N customers
-offices 1 ─ N employees
-employees 1 ─ N employees via reportsTo
+```sql
+SELECT
+    그룹컬럼,
+    집계함수()
+FROM 테이블
+GROUP BY 그룹컬럼;
 ```
 
-`classicmodels`는 조회 실습에서 조인이 왜 필요한지 보여주기에 좋습니다. 예를 들어
-고객이 주문한 상품명을 보려면 `customers -> orders -> orderdetails -> products`
-순서로 테이블을 연결해야 합니다.
+---
+### HAVING
+> 집계 결과에 조건을 적용합니다.
+
+```
+WHERE
+   ↓
+GROUP BY
+   ↓
+HAVING
+```
+- WHERE
+  - 그룹화 이전 필터링
+- HAVING
+  - 그룹화 이후 필터링
+
+---
+### 실행 순서 
+
+```
+FROM
+ ↓
+WHERE
+ ↓
+GROUP BY
+ ↓
+HAVING
+ ↓
+SELECT
+```
+
+---
+## 조인 (JOIN)
+- 조인은 여러 테이블의 데이터를 연결하여 조회하는 기능입니다.
+- 관계형 데이터베이스에서 가장 중요한 기능 중 하나입니다.
+
+---
+### INNER JOIN
+> 양쪽 테이블에 모두 존재하는 데이터만 조회합니다.
+
+
+
+
+
+
+---
+## 서브쿼리 & CTE
+
+

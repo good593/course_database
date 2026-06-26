@@ -17,7 +17,6 @@ paginate: true
 - DQL(데이터를 조회): `SELECT`
 
 ---
-
 ## SELECT 기본 구조
 
 ```sql
@@ -32,7 +31,6 @@ LIMIT 개수;
 습관이 좋습니다.
 
 ---
-
 ## 집계 예시
 
 ```sql
@@ -47,7 +45,6 @@ HAVING COUNT(*) >= 5;
 `WHERE`는 그룹화 전에 행을 걸러내고, `HAVING`은 그룹화 결과를 걸러냅니다.
 
 ---
-
 ## 조인 예시
 
 ```sql
@@ -64,7 +61,6 @@ JOIN orders o ON c.customerNumber = o.customerNumber;
 함께 조회하는 일이 많습니다.
 
 ---
-
 ## 서브쿼리와 CTE
 
 ```sql
@@ -90,4 +86,3 @@ SELECT *
 FROM customer_order_stats
 WHERE order_count >= 5;
 ```
-
