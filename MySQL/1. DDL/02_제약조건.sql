@@ -1,16 +1,21 @@
+-- ###############################################
 -- MySQL DDL 기초 02
 -- 제약조건: NOT NULL, UNIQUE, CHECK, DEFAULT, PRIMARY KEY
-
+-- 제약조건은 잘못된 데이터가 테이블에 들어가지 않도록 막아 주는 규칙입니다.
+-- ###############################################
 CREATE DATABASE IF NOT EXISTS mysql_ddl_practice
     DEFAULT CHARACTER SET utf8mb4
     DEFAULT COLLATE utf8mb4_unicode_ci;
 
 USE mysql_ddl_practice;
 
+-- 이전 실습 결과가 남아 있어도 같은 결과가 나오도록 테이블을 초기화합니다.
+-- 외래키가 있는 테이블은 참조하는 테이블보다 먼저 삭제해야 합니다.
 DROP TABLE IF EXISTS enrollments;
 DROP TABLE IF EXISTS courses;
 DROP TABLE IF EXISTS students;
 
+-- students 테이블: PRIMARY KEY, NOT NULL, UNIQUE, DEFAULT를 확인합니다.
 CREATE TABLE students (
     student_id INT AUTO_INCREMENT COMMENT '수강생을 식별하는 자동 증가 기본키',
     name VARCHAR(50) NOT NULL COMMENT '수강생 이름',
@@ -21,6 +26,7 @@ CREATE TABLE students (
     PRIMARY KEY (student_id)
 ) COMMENT = '수강생 기본 정보';
 
+-- courses 테이블: CHECK와 ENUM으로 허용되는 값을 제한합니다.
 CREATE TABLE courses (
     course_id INT AUTO_INCREMENT COMMENT '강의를 식별하는 자동 증가 기본키',
     title VARCHAR(100) NOT NULL COMMENT '강의명',
@@ -32,6 +38,10 @@ CREATE TABLE courses (
     PRIMARY KEY (course_id)
 ) COMMENT = '강의 기본 정보';
 
+-- ###############################################
+-- 제약조건 검증 
+-- ###############################################
+-- 제약조건을 만족하는 정상 데이터를 먼저 넣어 봅니다.
 INSERT INTO students (name, email, birth_date, phone)
 VALUES
     ('김민준', 'minjun@example.com', '2001-03-12', '010-1111-1111'),
@@ -42,6 +52,7 @@ VALUES
     ('SQL 기초', 'database', 120000, 'beginner', '2026-07-01'),
     ('Python 기초', 'programming', 100000, 'beginner', '2026-07-08');
 
+-- INSERT 결과를 확인합니다.
 SELECT *
 FROM students;
 
@@ -49,6 +60,7 @@ SELECT *
 FROM courses;
 
 -- 아래 문장들은 제약조건 오류를 확인할 때 주석을 풀고 하나씩 실행합니다.
+-- 오류 예시는 한 번에 여러 개를 풀지 말고, 하나씩 실행해야 원인을 확인하기 쉽습니다.
 
 -- NOT NULL 위반
 -- INSERT INTO students (email) VALUES ('noname@example.com');

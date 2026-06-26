@@ -1,4 +1,5 @@
 -- MySQL DML 실습용 샘플 데이터
+-- DML 예제에서 공통으로 사용할 수강생, 강의, 수강 신청, 결제 데이터를 준비합니다.
 
 CREATE DATABASE IF NOT EXISTS examplesdb
     DEFAULT CHARACTER SET utf8mb4
@@ -6,11 +7,14 @@ CREATE DATABASE IF NOT EXISTS examplesdb
 
 USE examplesdb;
 
+-- 실습을 반복해도 같은 상태에서 시작할 수 있도록 기존 테이블을 삭제합니다.
+-- 외래키 관계 때문에 자식 테이블(payments, enrollments)을 먼저 삭제합니다.
 DROP TABLE IF EXISTS payments;
 DROP TABLE IF EXISTS enrollments;
 DROP TABLE IF EXISTS courses;
 DROP TABLE IF EXISTS students;
 
+-- 수강생 기본 정보 테이블입니다.
 CREATE TABLE students (
     student_id INT AUTO_INCREMENT COMMENT '수강생을 식별하는 자동 증가 기본키',
     name VARCHAR(50) NOT NULL COMMENT '수강생 이름',
@@ -21,6 +25,7 @@ CREATE TABLE students (
     PRIMARY KEY (student_id)
 ) COMMENT = '수강생 기본 정보';
 
+-- 강의 기본 정보 테이블입니다.
 CREATE TABLE courses (
     course_id INT AUTO_INCREMENT COMMENT '강의를 식별하는 자동 증가 기본키',
     title VARCHAR(100) NOT NULL COMMENT '강의명',
@@ -32,6 +37,7 @@ CREATE TABLE courses (
     PRIMARY KEY (course_id)
 ) COMMENT = '강의 기본 정보';
 
+-- 수강생과 강의는 N:M 관계이므로 enrollments 연결 테이블로 관리합니다.
 CREATE TABLE enrollments (
     enrollment_id INT AUTO_INCREMENT COMMENT '수강 신청을 식별하는 자동 증가 기본키',
     student_id INT NOT NULL COMMENT '수강 신청한 수강생 ID',
@@ -49,6 +55,7 @@ CREATE TABLE enrollments (
         ON DELETE RESTRICT
 ) COMMENT = '수강생과 강의의 수강 신청 관계';
 
+-- 결제는 특정 수강 신청(enrollment_id)에 연결됩니다.
 CREATE TABLE payments (
     payment_id INT AUTO_INCREMENT COMMENT '결제 기록을 식별하는 자동 증가 기본키',
     enrollment_id INT NOT NULL COMMENT '결제 대상 수강 신청 ID',
@@ -61,6 +68,7 @@ CREATE TABLE payments (
         ON DELETE CASCADE
 ) COMMENT = '수강 신청별 결제 기록';
 
+-- 부모 테이블인 students, courses 데이터를 먼저 입력합니다.
 INSERT INTO students (name, email, birth_date, phone)
 VALUES
     ('김민준', 'minjun@example.com', '2001-03-12', '010-1111-1111'),
@@ -78,6 +86,7 @@ VALUES
     ('웹 백엔드 입문', 'web', 220000, 'intermediate', TRUE, '2026-08-15'),
     ('머신러닝 맛보기', 'ai', 250000, 'advanced', FALSE, '2026-09-01');
 
+-- enrollments는 위에서 입력한 student_id와 course_id를 참조합니다.
 INSERT INTO enrollments (student_id, course_id, enrolled_at, status, score)
 VALUES
     (1, 1, '2026-07-01', 'completed', 92.5),
@@ -91,6 +100,7 @@ VALUES
     (5, 4, '2026-08-15', 'enrolled', NULL),
     (6, 1, '2026-07-04', 'completed', 88.0);
 
+-- payments는 위에서 입력한 enrollment_id를 참조합니다.
 INSERT INTO payments (enrollment_id, amount, paid_at, method)
 VALUES
     (1, 120000, '2026-07-01 09:10:00', 'card'),
@@ -103,4 +113,5 @@ VALUES
     (9, 220000, '2026-08-15 17:30:00', 'card'),
     (10, 120000, '2026-07-04 18:40:00', 'cash');
 
+-- MySQL Workbench 등에서 준비 완료 여부를 바로 확인하기 위한 메시지입니다.
 SELECT 'sample data ready' AS message;

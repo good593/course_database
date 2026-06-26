@@ -1,5 +1,6 @@
 
 -- 문제 1: 고객별 총 결제 금액
+-- 고객별로 결제 금액을 합산한 뒤 50000 이상인 고객만 남깁니다.
 SELECT 
     c.customerName,
     SUM(p.amount) AS totalAmount
@@ -11,6 +12,7 @@ HAVING SUM(p.amount) >= 50000
 ORDER BY c.customerName ASC;
 
 -- 문제 2: 제품 라인별 총 판매 수량
+-- 주문상세의 수량을 상품 라인별로 합산합니다.
 SELECT 
     pl.productLine,
     SUM(od.quantityOrdered) AS totalQuantity
@@ -26,6 +28,7 @@ HAVING SUM(od.quantityOrdered) >= 1000
 ORDER BY totalQuantity DESC;
 
 -- 문제 3: 영업사원별 고객 수와 평균 결제 금액
+-- DISTINCT로 같은 고객이 여러 결제를 해도 고객 수는 한 번만 세도록 합니다.
 SELECT 
     CONCAT(e.firstName, ' ', e.lastName) AS employeeName,
     COUNT(DISTINCT c.customerNumber) AS customerCount,

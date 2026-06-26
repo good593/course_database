@@ -1,4 +1,5 @@
 -- MySQL DDL 기초 실습문제 정답
+-- 실행 순서: 데이터베이스 준비 -> 기존 테이블 삭제 -> 새 테이블 생성 -> 샘플 데이터 입력 -> 결과 확인
 
 CREATE DATABASE IF NOT EXISTS mysql_ddl_practice
     DEFAULT CHARACTER SET utf8mb4
@@ -6,10 +7,12 @@ CREATE DATABASE IF NOT EXISTS mysql_ddl_practice
 
 USE mysql_ddl_practice;
 
+-- 외래키 관계가 있으므로 자식 테이블(practice_enrollments)을 먼저 삭제합니다.
 DROP TABLE IF EXISTS practice_enrollments;
 DROP TABLE IF EXISTS practice_courses;
 DROP TABLE IF EXISTS practice_students;
 
+-- 수강생 테이블: NOT NULL, UNIQUE, DEFAULT, PRIMARY KEY를 확인하는 예제입니다.
 CREATE TABLE practice_students (
     student_id INT AUTO_INCREMENT COMMENT '수강생을 식별하는 자동 증가 기본키',
     name VARCHAR(50) NOT NULL COMMENT '수강생 이름',
@@ -19,6 +22,7 @@ CREATE TABLE practice_students (
     PRIMARY KEY (student_id)
 ) COMMENT = 'DDL 실습용 수강생 정보';
 
+-- 강의 테이블: CHECK와 ENUM으로 입력 가능한 값을 제한합니다.
 CREATE TABLE practice_courses (
     course_id INT AUTO_INCREMENT COMMENT '강의를 식별하는 자동 증가 기본키',
     title VARCHAR(100) NOT NULL COMMENT '강의명',
@@ -28,6 +32,7 @@ CREATE TABLE practice_courses (
     PRIMARY KEY (course_id)
 ) COMMENT = 'DDL 실습용 강의 정보';
 
+-- 수강 신청 테이블: 수강생과 강의를 연결하는 관계 테이블입니다.
 CREATE TABLE practice_enrollments (
     enrollment_id INT AUTO_INCREMENT COMMENT '수강 신청을 식별하는 자동 증가 기본키',
     student_id INT NOT NULL COMMENT '수강 신청한 수강생 ID',
@@ -41,6 +46,7 @@ CREATE TABLE practice_enrollments (
         FOREIGN KEY (course_id) REFERENCES practice_courses(course_id)
 ) COMMENT = 'DDL 실습용 수강 신청 정보';
 
+-- 외래키가 없는 부모 테이블부터 데이터를 입력합니다.
 INSERT INTO practice_students (name, email, birth_date)
 VALUES
     ('김민준', 'minjun.practice@example.com', '2001-03-12'),
@@ -51,12 +57,14 @@ VALUES
     ('SQL 기초', 120000, 'beginner'),
     ('Python 기초', 100000, 'beginner');
 
+-- practice_enrollments는 위에서 만든 student_id, course_id만 참조할 수 있습니다.
 INSERT INTO practice_enrollments (student_id, course_id)
 VALUES
     (1, 1),
     (1, 2),
     (2, 1);
 
+-- 테이블과 컬럼에 지정한 COMMENT가 잘 들어갔는지 확인합니다.
 SHOW TABLE STATUS LIKE 'practice_students';
 SHOW FULL COLUMNS FROM practice_students;
 
@@ -70,6 +78,7 @@ SELECT *
 FROM practice_enrollments;
 
 -- 오류 확인용 예시입니다. 하나씩 주석을 풀고 실행합니다.
+-- 실패 메시지를 읽으면서 어떤 제약조건이 동작했는지 확인해 보세요.
 
 -- INSERT INTO practice_students (email) VALUES ('noname.practice@example.com');
 -- INSERT INTO practice_students (name, email) VALUES ('중복', 'minjun.practice@example.com');
