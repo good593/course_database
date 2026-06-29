@@ -65,6 +65,111 @@ CRUD 실습은 `01_CRUD.sql`에서 확인합니다.
 
 ---
 
+## INSERT 기본 구조
+
+`INSERT`는 테이블에 새로운 행(row)을 추가합니다.
+
+```sql
+INSERT INTO 테이블명 (컬럼1, 컬럼2, 컬럼3)
+VALUES (값1, 값2, 값3);
+```
+
+- 컬럼 목록과 값 목록은 순서와 개수가 같아야 합니다.
+- `GENERATED AS IDENTITY`, `DEFAULT` 값이 있는 컬럼은 보통 생략할 수 있습니다.
+
+---
+
+## INSERT 예시
+
+```sql
+INSERT INTO students (name, email, birth_date, phone)
+VALUES ('오하늘', 'haneul@example.com', '2002-04-03', '010-7777-7777')
+RETURNING student_id, name, email;
+```
+
+`RETURNING`을 사용하면 추가된 행의 주요 값을 바로 확인할 수 있습니다.
+
+---
+
+## UPDATE 기본 구조
+
+`UPDATE`는 이미 저장된 행의 값을 수정합니다.
+
+```sql
+UPDATE 테이블명
+SET 컬럼1 = 새값1,
+    컬럼2 = 새값2
+WHERE 조건;
+```
+
+`WHERE`가 없으면 테이블의 모든 행이 수정될 수 있습니다.
+
+---
+
+## UPDATE 전 확인
+
+수정하기 전에 같은 `WHERE` 조건으로 대상 행을 먼저 조회합니다.
+
+```sql
+SELECT
+    student_id,
+    name,
+    phone
+FROM students
+WHERE email = 'haneul@example.com';
+```
+
+---
+
+## UPDATE 예시
+
+```sql
+UPDATE students
+SET phone = '010-7777-0000'
+WHERE email = 'haneul@example.com'
+RETURNING student_id, name, phone;
+```
+
+---
+
+## DELETE 기본 구조
+
+`DELETE`는 조건에 맞는 행을 테이블에서 삭제합니다.
+
+```sql
+DELETE FROM 테이블명
+WHERE 조건;
+```
+
+`WHERE`가 없으면 테이블의 모든 행이 삭제될 수 있습니다.
+
+---
+
+## DELETE 전 확인
+
+삭제하기 전에 같은 `WHERE` 조건으로 대상 행을 먼저 조회합니다.
+
+```sql
+SELECT
+    student_id,
+    name,
+    email
+FROM students
+WHERE email = 'haneul@example.com';
+```
+
+---
+
+## DELETE 예시
+
+```sql
+DELETE FROM students
+WHERE email = 'haneul@example.com'
+RETURNING student_id, name, email;
+```
+
+---
+
 ## SELECT 기본 구조
 
 ```sql
