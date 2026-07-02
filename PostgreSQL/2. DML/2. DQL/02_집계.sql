@@ -1,7 +1,7 @@
 -- PostgreSQL DQL 기초 02
 -- 집계: COUNT, SUM, AVG, MIN, MAX, GROUP BY, HAVING
 
--- restore.sql을 복원한 dvdrental 데이터베이스에서 실행합니다.
+-- restore.sql을 실행해 만든 영화 대여점 샘플 테이블에서 실행합니다.
 
 -- 전체 영화 수
 SELECT COUNT(*) AS film_count

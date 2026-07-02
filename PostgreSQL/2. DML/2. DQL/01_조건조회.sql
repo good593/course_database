@@ -1,7 +1,7 @@
 -- PostgreSQL DQL 기초 01
 -- 조건 조회: WHERE, ORDER BY, LIMIT
 
--- restore.sql을 복원한 dvdrental 데이터베이스에서 실행합니다.
+-- restore.sql을 실행해 만든 영화 대여점 샘플 테이블에서 실행합니다.
 
 -- 영화 목록 확인
 SELECT

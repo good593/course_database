@@ -1,7 +1,7 @@
 -- PostgreSQL DQL 기초 03
 -- 조인: INNER JOIN, LEFT JOIN
 
--- restore.sql을 복원한 dvdrental 데이터베이스에서 실행합니다.
+-- restore.sql을 실행해 만든 영화 대여점 샘플 테이블에서 실행합니다.
 
 -- 대여 목록: 고객 + 대여 + 영화
 SELECT

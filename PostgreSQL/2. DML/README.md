@@ -27,7 +27,7 @@ DDL이 테이블의 구조를 정의한다면, DML과 DQL은 테이블 안의 �
 이번 장에서는 실습 데이터를 두 가지로 나누어 사용합니다.
 
 - CRUD: `00_setup_sample_data.sql`의 작은 교육 서비스 데이터
-- DQL: `DQL 기초/restore.sql`의 `dvdrental` 영화 대여 데이터
+- DQL: `DQL 기초/restore.sql`의 DVD 대여점 샘플 데이터
 
 CRUD 실습 전에는 샘플 테이블과 데이터를 생성합니다. PowerShell에서는 호스트의
 SQL 파일 내용을 컨테이너 안의 `psql`로 전달합니다.
@@ -42,13 +42,12 @@ Get-Content -Raw -Encoding UTF8 "2. PostgreSQL DML\00_setup_sample_data.sql" | d
 \i '2. PostgreSQL DML/00_setup_sample_data.sql'
 ```
 
-DQL 실습은 `DQL 기초/restore.sql`을 복원한 `dvdrental` 데이터베이스를 기준으로
-합니다. 이 덤프는 `actor`, `film`, `customer`, `rental`, `payment` 같은 영화
-대여 서비스 테이블을 포함합니다.
+DQL 실습은 `DQL 기초/restore.sql`을 실행해 만든 영화 대여점 샘플 테이블을
+기준으로 합니다. 이 파일은 `actor`, `film`, `customer`, `rental`, `payment`
+같은 테이블과 실습 데이터를 함께 생성합니다.
 
-> `restore.sql` 안에는 `$$PATH$$/*.dat` 데이터 파일 참조가 있습니다. 실제 데이터를
-> 함께 복원하려면 `.dat` 파일이 있는 경로로 `$$PATH$$`를 바꾸거나, 데이터 파일을
-> 컨테이너 안의 같은 경로에 복사해야 합니다.
+> DBeaver에서는 `examples_db` 연결을 선택한 뒤 `DQL 기초/restore.sql` 파일 전체를
+> 실행하면 됩니다. 외부 `.dat` 파일이나 `\connect` 명령은 사용하지 않습니다.
 
 ---
 
@@ -278,5 +277,5 @@ DQL 기초/04_서브쿼리_CTE.sql
 ```
 
 `01_CRUD.sql`은 `00_setup_sample_data.sql` 실행 후 사용하는 것을 기준으로 합니다.
-`DQL 기초`의 조회 파일은 `restore.sql`로 `dvdrental` 데이터베이스를 복원한 뒤
+`DQL 기초`의 조회 파일은 `restore.sql`을 실행해 영화 대여점 샘플 테이블을 만든 뒤
 사용하는 것을 기준으로 합니다.

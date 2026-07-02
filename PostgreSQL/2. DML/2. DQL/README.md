@@ -1,12 +1,16 @@
 # PostgreSQL DQL 기초
 
-이 폴더의 DQL 실습은 `restore.sql`에 들어 있는 `dvdrental` 샘플 데이터베이스를
-기준으로 합니다. `dvdrental`은 DVD 대여점 도메인을 다루며, 조건 조회, 집계,
-조인, 서브쿼리, CTE를 연습하기 좋은 관계형 데이터 구조를 갖고 있습니다.
+이 폴더의 DQL 실습은 `restore.sql`에 들어 있는 DVD 대여점 샘플 데이터를
+기준으로 합니다. `restore.sql`은 `film`, `customer`, `rental`, `payment` 같은
+테이블을 만들고 실습 데이터를 직접 넣어 줍니다.
 
 ## restore.sql 사용 안내
 
-`restore.sql`은 PostgreSQL 덤프 파일입니다. 주요 테이블은 다음과 같습니다.
+`restore.sql`은 DBeaver와 `psql`에서 바로 실행할 수 있는 자기완결형 SQL 파일입니다.
+외부 `.dat` 파일, `\connect` 같은 psql 전용 명령, OS별 locale 설정을 사용하지
+않습니다.
+
+주요 테이블은 다음과 같습니다.
 
 | 테이블 | 설명 |
 |---|---|
@@ -19,38 +23,26 @@
 | `rental` | 대여 기록 |
 | `payment` | 결제 기록 |
 | `inventory` | 매장별 영화 재고 |
-| `store`, `staff` | 매장과 직원 정보 |
+| `staff`, `store` | 직원과 매장 정보 |
 | `address`, `city`, `country` | 주소 정보 |
-
-덤프 파일 안에는 다음과 같은 외부 데이터 파일 경로가 포함되어 있습니다.
-
-```sql
-COPY public.actor (...) FROM '$$PATH$$/3057.dat';
-```
-
-실제 데이터를 복원하려면 `$$PATH$$`를 `.dat` 파일이 있는 경로로 바꾸거나, 해당
-데이터 파일들을 컨테이너 안에 복사해야 합니다. 데이터 파일 없이 실행하면 테이블
-구조는 확인할 수 있지만, 조회 실습 결과가 비어 있거나 `COPY` 단계에서 오류가 날 수
-있습니다.
-
-또한 이 덤프는 Windows 환경에서 만들어진 파일이라 `CREATE DATABASE` 줄의
-`LC_COLLATE`, `LC_CTYPE` 값이 현재 PostgreSQL 컨테이너의 locale과 맞지 않을 수
-있습니다. 그 경우 수업 환경에 맞는 locale로 바꾸거나 해당 옵션을 제거한 뒤
-실행합니다.
 
 ## 실행 예시
 
-PowerShell에서 `restore.sql`을 컨테이너로 복사한 뒤 실행합니다.
+DBeaver에서는 `examples_db` 연결을 선택한 상태에서 `restore.sql` 파일 전체를
+실행합니다. 실행이 끝나면 같은 데이터베이스의 `public` 스키마에 실습 테이블이
+생성됩니다.
+
+PowerShell에서 실행할 때는 SQL 파일 내용을 컨테이너 안의 `psql`로 전달합니다.
 
 ```shell
-docker cp "DQL 기초\restore.sql" postgres-db:/tmp/restore.sql
-docker exec -it postgres-db psql -U admin -d postgres -f /tmp/restore.sql
+Get-Content -Raw -Encoding UTF8 "PostgreSQL\2. DML\2. DQL\restore.sql" | docker exec -i postgres-db psql -U admin -d examples_db
 ```
 
-복원 후에는 `dvdrental` 데이터베이스에 접속합니다.
+복원 후에는 간단한 조회로 데이터를 확인합니다.
 
-```shell
-docker exec -it postgres-db psql -U admin -d dvdrental
+```sql
+SELECT COUNT(*) AS film_count FROM film;
+SELECT COUNT(*) AS rental_count FROM rental;
 ```
 
 ## 강의 순서
@@ -71,6 +63,6 @@ store 1 ─ N inventory
 address N ─ 1 city N ─ 1 country
 ```
 
-`dvdrental`은 조회 실습에서 조인이 왜 필요한지 보여주기에 좋습니다. 예를 들어
-고객이 빌린 영화 제목을 보려면 `customer -> rental -> inventory -> film` 순서로
-테이블을 연결해야 합니다.
+DVD 대여점 데이터는 조회 실습에서 조인이 왜 필요한지 보여주기에 좋습니다. 예를
+들어 고객이 빌린 영화 제목을 보려면 `customer -> rental -> inventory -> film`
+순서로 테이블을 연결해야 합니다.
