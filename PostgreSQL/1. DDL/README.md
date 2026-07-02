@@ -1,26 +1,20 @@
 ---
+style: |
+  img {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
 marp: true
 paginate: true
 ---
-
 # PostgreSQL DDL 기초
 
-DDL은 **Data Definition Language**의 줄임말입니다. 데이터베이스 안에 어떤
-테이블을 만들지, 각 컬럼은 어떤 값을 저장할지, 데이터가 지켜야 할 규칙은
-무엇인지 정의합니다.
+DDL은 **Data Definition Language**의 줄임말입니다. 
+데이터베이스 안에 어떤 테이블을 만들지, 각 컬럼은 어떤 값을 저장할지, 데이터가 지켜야 할 규칙은 무엇인지 정의합니다.
 
 ---
-
-## 이번 차시의 목표
-
-1. PostgreSQL에서 자주 쓰는 데이터 타입을 구분합니다.
-2. `CREATE TABLE` 문법으로 테이블을 생성합니다.
-3. 테이블과 컬럼 주석을 작성합니다.
-4. 제약조건으로 잘못된 데이터 입력을 막습니다.
-5. 외래키를 사용해 테이블 사이의 관계를 표현합니다.
-
----
-
 ## DDL에서 자주 쓰는 명령
 
 | 명령 | 역할 |
@@ -33,9 +27,7 @@ DDL은 **Data Definition Language**의 줄임말입니다. 데이터베이스 �
 > 이번 강의에서는 `CREATE TABLE`을 중심으로 다룹니다.
 
 ---
-
 ## 테이블을 만들기 전에 정할 것
-
 테이블 설계는 다음 질문에서 시작합니다.
 
 1. 어떤 대상을 저장할 것인가?
@@ -46,7 +38,6 @@ DDL은 **Data Definition Language**의 줄임말입니다. 데이터베이스 �
 6. 다른 테이블과 연결되는 값은 무엇인가?
 
 ---
-
 ## PostgreSQL 데이터 타입
 
 | 분류 | 대표 타입 | 예시 |
@@ -59,7 +50,6 @@ DDL은 **Data Definition Language**의 줄임말입니다. 데이터베이스 �
 | JSON | `JSONB` | 유연한 추가 정보 |
 
 ---
-
 ## 기본 테이블 생성
 
 ```sql
@@ -72,11 +62,9 @@ CREATE TABLE students (
 );
 ```
 
-`GENERATED ALWAYS AS IDENTITY`는 PostgreSQL에서 자동 증가 번호를 만들 때
-사용하는 권장 문법입니다.
+`GENERATED ALWAYS AS IDENTITY`는 PostgreSQL에서 자동 증가 번호를 만들 때 사용하는 권장 문법입니다.
 
 ---
-
 ## 테이블과 컬럼 주석
 
 PostgreSQL에서는 `COMMENT ON` 문법으로 테이블과 컬럼에 설명을 남길 수 있습니다.
@@ -89,11 +77,9 @@ COMMENT ON COLUMN students.name IS '수강생 이름';
 COMMENT ON COLUMN students.email IS '수강생 이메일, 중복 불가';
 ```
 
-테이블을 만든 뒤 바로 주석을 작성하면 ERD, DB 관리 도구, 협업 문서에서 컬럼의
-의도를 더 쉽게 확인할 수 있습니다.
+테이블을 만든 뒤 바로 주석을 작성하면 ERD, DB 관리 도구, 협업 문서에서 컬럼의 의도를 더 쉽게 확인할 수 있습니다.
 
 ---
-
 ## 주석 확인하기
 
 테이블 주석은 `obj_description()`으로 확인할 수 있습니다.
@@ -115,7 +101,6 @@ ORDER BY ordinal_position;
 ```
 
 ---
-
 ## 제약조건
 
 제약조건은 테이블에 저장되는 데이터의 규칙입니다.
@@ -130,7 +115,6 @@ ORDER BY ordinal_position;
 | `FOREIGN KEY` | 다른 테이블의 값을 참조 |
 
 ---
-
 ## CHECK 예시
 
 ```sql
@@ -153,7 +137,6 @@ COMMENT ON COLUMN courses.level IS '강의 난이도';
 `CHECK`는 금액이 음수가 되거나, 정해지지 않은 난이도가 입력되는 일을 막습니다.
 
 ---
-
 ## 관계형 데이터베이스의 관계
 
 | 관계 | 예시 | 표현 방법 |
@@ -166,7 +149,6 @@ COMMENT ON COLUMN courses.level IS '강의 난이도';
 따라서 `enrollments` 같은 중간 테이블이 필요합니다.
 
 ---
-
 ## 외래키 예시
 
 ```sql
@@ -188,26 +170,46 @@ COMMENT ON COLUMN enrollments.enrolled_at IS '수강 신청일';
 `REFERENCES`는 존재하지 않는 수강생이나 강의로 수강 신청을 만들 수 없게 합니다.
 
 ---
-
-## 실습 파일 순서
-
-아래 순서대로 실행하면 DDL 개념을 단계적으로 확인할 수 있습니다.
-
-```text
-01_테이블과_데이터타입.sql
-02_제약조건.sql
-03_테이블_관계.sql
-04_테이블_주석.sql
-```
-
-각 파일은 독립적으로 실행할 수 있도록 필요한 테이블을 다시 생성합니다.
+# 테스트 - DBeaver
 
 ---
+## 계정 정보 확인 
 
-## 확인 질문
+![bg right w:500](./img/image.png)
 
-1. `VARCHAR(50)`과 `TEXT`는 어떤 차이가 있나요?
-2. 테이블 주석과 컬럼 주석은 각각 어떤 정보를 남기는 데 적합한가요?
-3. `PRIMARY KEY`와 `UNIQUE`의 공통점과 차이점은 무엇인가요?
-4. N:M 관계를 테이블로 표현할 때 중간 테이블이 필요한 이유는 무엇인가요?
-5. 외래키가 있으면 어떤 종류의 실수를 막을 수 있나요?
+---
+## Connection 생성 
+
+![w:850](./img/image-1.png)
+
+---
+> Test Connection
+
+![w:850](./img/image-2.png)
+
+---
+> Test Connection 성공시, 완료 
+
+![w:850](./img/image-3.png)
+
+---
+> 생성된 Connection 확인 
+
+![bg right w:450](./img/image-4.png)
+
+---
+## SQL 명령어 실행 
+
+![alt text](./img/image-5.png)
+
+---
+> 현재 스키마(public)의 테이블 조회
+- 명령어 입력 후 `Ctrl` + `Enter`
+```sql
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
+  AND table_type = 'BASE TABLE';
+```
+![w:850](./img/image-6.png)
+
